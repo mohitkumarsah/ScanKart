@@ -30,8 +30,8 @@ export default function MallDetailPage() {
     cart,
   } = useStore()
 
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedCategory, setSelectedCategory ] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery ] = useState('')
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -124,7 +124,7 @@ export default function MallDetailPage() {
               </div>
 
               {/* Category Filter */}
-              <div className="flex gaps-2 overflow-x-auto pb-2">
+              <div className="flex gap-2 overflow-x-auto pb-2">
                 <Button
                   variant={selectedCategory === null ? 'default' : 'outline'}
                   size="sm"
