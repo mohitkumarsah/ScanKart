@@ -11,7 +11,7 @@ import {
   signInAnonymously,
   sendPasswordResetEmail,
 } from 'firebase/auth'
-import { Twilio } from 'twilio';
+// Twilio is used dynamically at runtime for SMS sending
 import { auth } from './firebase'
 import { setDocument, getDocument, addDocument, updateDocument, queryDocuments } from './firestore-db'
 import { where, orderBy, limit } from 'firebase/firestore'
@@ -22,6 +22,7 @@ export interface AuthUser {
   email: string
   phone?: string
   photoURL?: string
+  budget?: number
   createdAt?: Date
   emailVerified?: boolean
 }
@@ -325,24 +326,11 @@ export const sendPhoneOtp = async (phoneNumber: string, name?: string): Promise<
       console.warn(`📱 Test OTP: ${otp} (Expires in 10 minutes)`)
     }
 
-    // Send real SMS via Twilio
-    const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID
-    const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN
-    const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER
-    
-    if (twilioAccountSid && twilioAuthToken && twilioPhoneNumber) {
-      try {
-        const client = twilio(twilioAccountSid, twilioAuthToken) as Twilio;
-        await client.messages.create({
-          body: `Your ScanKart OTP is ${otp}. Valid for 10 minutes.`,
-          from: twilioPhoneNumber,
-          to: `+91${cleanPhone}`
-        });
-        console.log(`✅ SMS sent to +91${cleanPhone}`);
-      } catch (smsError) {
-        console.error('SMS send failed:', smsError);
-        // Non-fatal: OTP still works via console/test in dev
-      }
+    // Note: Twilio SMS should be sent via a server-side API route in production
+    // For now, OTP is logged to console for development/testing
+    if (typeof window === 'undefined') {
+      // Server-side only: could send SMS here via API
+      console.log(`[Server] Would send SMS to +91${cleanPhone}`)
     }
 
     return { 

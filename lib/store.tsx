@@ -28,6 +28,18 @@ export interface Order {
   createdAt: Date
 }
 
+export interface Mall {
+  id: string
+  name: string
+  description?: string
+  image: string
+  location?: string
+  rating?: number
+  categories: string[]
+  isActive: boolean
+  discount?: number
+}
+
 export interface User {
   id: string
   name: string
@@ -62,6 +74,12 @@ interface StoreContextType {
   products: Product[]
   getProductByBarcode: (barcode: string) => Product | undefined
   
+  malls: Mall[]
+  currentMallId: string | null
+  setCurrentMallId: (id: string | null) => void
+  getProductsByMall: (mallId: string) => Product[]
+  getProductsByMallAndCategory: (mallId: string, category: string) => Product[]
+
   isDarkMode: boolean
   toggleDarkMode: () => void
 }
@@ -93,6 +111,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [orders, setOrders] = useState<Order[]>([])
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [products] = useState<Product[]>(mockProducts)
+  const [malls, setMalls] = useState<Mall[]>([])
+  const [currentMallId, setCurrentMallId] = useState<string | null>(null)
 
   // Load dark mode and budget from localStorage
   useEffect(() => {
@@ -149,6 +169,19 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setUser(null)
       }
     })
+
+    // Load malls
+    const loadMalls = async () => {
+      try {
+        const { getAllMalls } = await import('./firestore-db')
+        const mallData = await getAllMalls()
+        setMalls(mallData as Mall[])
+      } catch (error) {
+        console.error('Failed to load malls:', error)
+      }
+    }
+    loadMalls()
+
     return () => unsubscribe()
   }, [])
 
@@ -216,6 +249,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setIsDarkMode(prev => !prev)
   }
 
+  const getProductsByMall = (mallId: string) => {
+    return products.filter(p => (p as any).mallId === mallId)
+  }
+
+  const getProductsByMallAndCategory = (mallId: string, category: string) => {
+    return products.filter(p => (p as any).mallId === mallId && p.category === category)
+  }
+
   const logout = async () => {
     try {
       const { logout: firebaseLogout } = await import('./firebase-auth')
@@ -250,6 +291,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         addOrder,
         products,
         getProductByBarcode,
+        malls,
+        currentMallId,
+        setCurrentMallId,
+        getProductsByMall,
+        getProductsByMallAndCategory,
         isDarkMode,
         toggleDarkMode,
       }}
