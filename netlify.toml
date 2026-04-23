@@ -1,0 +1,30 @@
+# Netlify Configuration for ScanKart (Server-Rendered Next.js)
+
+[build]
+  command = "npm run build"
+  # For server-rendered Next.js, DO NOT set a publish directory
+  # The @netlify/plugin-nextjs handles all output configuration
+  publish = ""
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Netlify Next.js Plugin Configuration
+# This plugin handles server-rendered and dynamic routes
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Environment variables (can be overridden in Netlify UI)
+[env.production]
+  environment = { NEXT_PUBLIC_FIREBASE_API_KEY = "", NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN = "", NEXT_PUBLIC_FIREBASE_PROJECT_ID = "", NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET = "", NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID = "", NEXT_PUBLIC_FIREBASE_APP_ID = "", NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID = "" }
+
+# Cache headers for static assets
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
