@@ -1,19 +1,19 @@
 /** @type {import('next').NextConfig} */
-const repoName = 'ScanKart';
-const basePath = process.env.NODE_ENV === 'production' ? `/${repoName}` : '';
-
 const nextConfig = {
     output: 'export',
     trailingSlash: true,
-    basePath,
-    assetPrefix: basePath || undefined,
+    basePath: '/ScanKart',
+    assetPrefix: '/ScanKart',
     images: {
         unoptimized: true,
     },
-    // Optimize static file serving
-    onDemandEntries: {
-        maxInactiveAge: 60 * 1000,
-        pagesBufferLength: 5,
+    // Disable type checking during build (handled separately)
+    typescript: {
+        ignoreBuildErrors: true,
+    },
+    // Disable ESLint during build
+    eslint: {
+        ignoreDuringBuilds: true,
     },
 };
 

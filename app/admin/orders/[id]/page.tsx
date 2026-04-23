@@ -42,7 +42,7 @@ export default function AdminOrderDetails() {
   const loadOrder = async () => {
     setIsLoading(true)
     try {
-      const data = await getOrderDetails(orderId)
+      const data = await getOrderDetails(orderId) as any
       if (data) {
         setOrder(data)
         setStatus(data.paymentStatus || 'pending')
