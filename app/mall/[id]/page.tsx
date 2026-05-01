@@ -1,8 +1,8 @@
+'use client'
+
 export async function generateStaticParams() {
   return [];
 }
-
-'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
@@ -30,8 +30,8 @@ export default function MallDetailPage() {
     cart,
   } = useStore()
 
-  const [selectedCategory, setSelectedCategory ] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery ] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     if (!isAuthenticated) {
